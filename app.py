@@ -1,20 +1,18 @@
-from flask import Flask, redirect, render_template, request, jsonify
-from flask_mysqldb import MySQL
-from datetime import datetime
 import uuid
-import validators
-from validators import ValidationFailure
+from datetime import datetime
 
+from flask import Flask, jsonify, render_template, request
+from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 
 
 # Configurating database
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_HOST'] = '127.0.0.1'
+app.config['MYSQL_USER'] = 'urlshortener'
+app.config['MYSQL_PASSWORD'] = 'urlshortener'
 app.config['MYSQL_DB'] = 'urlshortener'
- 
+
 mysql = MySQL(app)
 
 
@@ -27,7 +25,7 @@ def index():
 
 @app.route("/", methods=['POST'])
 def shorten_url():
-   
+
     '''Transform long url in short url'''
     '''Insert it into database'''
 
@@ -49,7 +47,7 @@ def shorten_url():
 
     ### insert into database
     cursor.execute('''INSERT INTO url (long_url, short_url, creation_date, expiration_date)
-                           VALUES(%s, %s, %s, %s)''', 
+                           VALUES(%s, %s, %s, %s)''',
                            (long_url, short_url, datetime.now(), expiration_date))
     mysql.connection.commit()
 
@@ -58,7 +56,7 @@ def shorten_url():
 
     # return short url to the user
     return jsonify({"short url": short_url})
-   
+
 
 @app.route("/")
 def get_url():
