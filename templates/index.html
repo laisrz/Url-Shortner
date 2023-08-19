@@ -13,8 +13,11 @@
     <body>
         <h2>URL-Shortener</h2>
         <main>
-
-            
+            <form action="/shortener" method="post">
+                <input autocomplete="off" autofocus required id="long_url" name="long_url" placeholder="URL" type="text">
+                <input autocomplete="off"  id="expiration_date" name="expiration_date" placeholder="" type="date">
+                <button type="submit">Submit</button>
+            </form>           
         </main>
     </body>
 </html>
