@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, jsonify
-from flask_mysqldb import MySQL
 from pony.orm import *
 from datetime import datetime, date
 import uuid
@@ -11,12 +10,32 @@ app = Flask(__name__)
 
 
 # Configurating database
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'urlshortener'
- 
-mysql = MySQL(app)
+db = Database()
+
+# Creating entities
+class URL(db.Entity):
+    _table_ = 'url'
+    id = PrimaryKey(int, auto=True)
+    long_url = Required(str)
+    short_url = Required(str)
+    creation_date = Required(datetime)
+    expiration_date = Optional(date)
+    number_visits = Optional(int)
+    is_deleted = Required(bool, default=0)
+
+# Database binding
+db.bind(
+        provider='mysql',
+        host='localhost',
+        user='root',
+        passwd='',
+        db='urlshortener'
+    )
+
+# Mapping entities to database tables
+db.generate_mapping(create_tables=True)
+
+set_sql_debug(True)
 
 
 @app.route("/", methods=['GET'])
@@ -27,6 +46,7 @@ def index():
 
 
 @app.route("/", methods=['POST'])
+@db_session
 def shorten_url():
    
     '''Transform long url in short url'''
@@ -47,61 +67,18 @@ def shorten_url():
     ### algoritm to transform long url into short url
     short_url = str(uuid.uuid4())
 
-    #Creation of a cursor to database
-    cursor = mysql.connection.cursor()
-
     ### insert into database
-    cursor.execute('''INSERT INTO url (long_url, short_url, creation_date, expiration_date)
-                           VALUES(%s, %s, %s, %s)''', 
-                           (long_url, short_url, datetime.now(), expiration_date))
-    mysql.connection.commit()
-
-    #Closing the cursor
-    cursor.close()
+    URL(
+        long_url=long_url,
+        short_url=short_url,
+        creation_date=datetime.now(),
+        expiration_date=expiration_date
+    )
+    commit()
 
     # return short url to the user
     return jsonify({"short url": short_url})
    
-
-@app.route("/")
-def get_url():
-    '''Retrieve short url'''
-    
-    # get data from json
-    data = request.get_json()
-
-    long_url = data["long_url"]
-
-    # Creation of a cursor to database
-    cursor = mysql.connection.cursor()
-
-    # Fetch id of short url to be deleted
-    id = cursor.execute("SELECT id FROM url WHERE long_url = ?", long_url)
-
-    if not id:
-        return jsonify({"message": "URL cannot be retrieved"})
-
-    # Check whether URL has been deleted
-    is_deleted = cursor.execute("SELECT is_deleted FROM url WHERE id = ?", id)
-
-    if is_deleted == 1:
-        return jsonify({"message": "URL cannot be retrieved"})
-    
-    # Check whether URL has been expired
-    expiration_date = cursor.execute("SELECT expiration_date FROM url WHERE id = ?", id)
-
-    if expiration_date < date.today():
-        return jsonify({"message": "URL has been expired"})
-
-    # Get shor_url from database
-    short_url = cursor.execute("SELECT short_url FROM url WHERE id = ?", id)
-
-    # Closing the cursor
-    cursor.close()
-
-    # Return message to the user
-    return jsonify({"short_url": short_url})
-
 
 @app.route("/", methods=['PUT'])
 def update_url():
@@ -109,6 +86,7 @@ def update_url():
 
 
 @app.route("/", methods=['DELETE'])
+@db_session
 def delete_url():
     '''Delete short url'''
     
@@ -117,21 +95,20 @@ def delete_url():
 
     short_url = data["short_url"]
 
-    # Creation of a cursor to database
-    cursor = mysql.connection.cursor()
-
     # Fetch id of short url to be deleted
-    id = cursor.execute("SELECT id FROM url WHERE short_url = ?", short_url)
+    url_data = URL.get(short_url=short_url)
 
+    # Validate user's input
+    if url_data == None:
+        return jsonify({"message": "URL provided not stored in database"})
+    
     # Delete from database
-    cursor.execute("UPDATE url SET is_deleted = ? WHERE id = ?", (1, [id]))
-    mysql.connection.commit()
-
-    # Closing the cursor
-    cursor.close()
+    url_data.is_deleted = 1
+    commit()
 
     # Return message to the user
     return jsonify({"message": "Short URL deleted"})
+
 
 
 
