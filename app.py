@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, redirect, render_template, request, jsonify
 from pony.orm import *
 from datetime import datetime, date
 import uuid
@@ -79,6 +79,22 @@ def shorten_url():
     # return short url to the user
     return jsonify({"short url": short_url})
    
+
+@app.route("/<short_url>")
+@db_session
+def get_url(short_url):
+    
+    url_data = URL.get(short_url=short_url)
+
+    # Validate user's input
+    if url_data == None:
+        return jsonify({"message": "URL provided not stored in database"})
+    
+    if url_data.is_deleted == 1:
+        return jsonify({"message": "URL provided has been deleted"})
+    
+    return redirect(url_data.long_url)
+
 
 @app.route("/", methods=['PUT'])
 def update_url():
