@@ -93,7 +93,11 @@ def get_url(short_url):
     if url_data.is_deleted == 1:
         return jsonify({"message": "URL provided has been deleted"})
     
-    return redirect(url_data.long_url)
+    if url_data.expiration_date == None or url_data.expiration_date > date.today():
+        return redirect(url_data.long_url)
+    
+    if url_data.expiration_date < date.today():
+        return jsonify({"message": "URL provided has expired"})
 
 
 @app.route("/", methods=['PUT'])
