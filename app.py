@@ -67,6 +67,8 @@ def shorten_url():
     ### algoritm to transform long url into short url
     short_url = str(uuid.uuid4())
 
+	
+
     ### insert into database
     URL(
         long_url=long_url,
@@ -83,6 +85,7 @@ def shorten_url():
 @app.route("/<short_url>")
 @db_session
 def get_url(short_url):
+    """Retrieve long_url from a given short url and redirect the user to the long_url"""
     
     url_data = URL.get(short_url=short_url)
 
@@ -94,6 +97,10 @@ def get_url(short_url):
         return jsonify({"message": "URL provided has been deleted"})
     
     if url_data.expiration_date == None or url_data.expiration_date > date.today():
+        #Update counter
+        url_data.number_visits =+ 1
+
+        # Redirect to the long_url
         return redirect(url_data.long_url)
     
     if url_data.expiration_date < date.today():
