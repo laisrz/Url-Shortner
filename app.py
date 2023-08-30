@@ -31,8 +31,8 @@ def shorten_url():
     expiration_date = user_data["expiration_date"]
 
     # Validate URL
-    if url.is_not_valid(long_url):
-        return url.is_not_valid(long_url)
+    if url.is_invalid(long_url):
+        return url.is_invalid(long_url)
         
     ### algoritm to transform long url into short url
     short_url = str(uuid.uuid4())
@@ -102,8 +102,8 @@ def update_url():
     if data.is_expired(db_data):
         return data.is_expired(db_data)
     
-    if url.is_not_valid(new_long_url):
-        return url.is_not_valid(new_long_url)
+    if url.is_invalid(new_long_url):
+        return url.is_invalid(new_long_url)
     
     # Update database
     db_data.long_url = new_long_url
