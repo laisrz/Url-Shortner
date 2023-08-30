@@ -3,36 +3,10 @@ from flask import Flask, redirect, render_template, request, jsonify
 from datetime import datetime, date
 import uuid
 from validations import data, url
+from database import db_config
 
 
 app = Flask(__name__)
-
-
-# Configurating database
-db = orm.Database()
-
-class URL(db.Entity):
-    _table_ = 'url'
-    id = orm.PrimaryKey(int, auto=True)
-    long_url = orm.Required(str)
-    short_url = orm.Required(str)
-    creation_date = orm.Required(datetime)
-    expiration_date = orm.Optional(date)
-    number_visits = orm.Optional(int)
-    is_deleted = orm.Required(bool, default=0)
-
-db.bind(
-    provider='mysql',
-    host='localhost',
-    user='root',
-    passwd='',
-    db='urlshortener'
-)
-
-# Mapping entities to database tables
-db.generate_mapping(create_tables=True)
-
-orm.set_sql_debug(True)
 
 
 @app.route("/", methods=['GET'])
@@ -64,12 +38,12 @@ def shorten_url():
     short_url = str(uuid.uuid4())
 
     ### insert into database
-    URL(
-    long_url=long_url,
-    short_url=short_url,
-    creation_date=datetime.now(),
-    expiration_date=expiration_date
-)
+    db_config.URL(
+        long_url=long_url,
+        short_url=short_url,
+        creation_date=datetime.now(),
+        expiration_date=expiration_date
+    )
     orm.commit()
 
     # return short url to the user
@@ -81,7 +55,7 @@ def shorten_url():
 def get_url(short_url):
     """Retrieve long_url from a given short url and redirect the user to the long_url"""
     
-    db_data = URL.get(short_url=short_url)
+    db_data = db_config.URL.get(short_url=short_url)
 
     # Validate user's input
     if data.db_data_not_found(db_data):
@@ -116,11 +90,11 @@ def update_url():
     new_long_url = user_data["long_url"]
 
     # Get all data from database based on the short url provided
-    db_data = URL.get(short_url=short_url)
+    db_data = db_config.URL.get(short_url=short_url)
 
     # Validate user's input
     if data.db_data_not_found(db_data):
-        return data.url_not_found(db_data)
+        return data.db_data_not_found(db_data)
     
     if data.is_deleted(db_data):
         return data.is_deleted(db_data)
@@ -150,7 +124,7 @@ def delete_url():
     short_url = user_data["short_url"]
 
     # Fetch id of short url to be deleted
-    db_data = URL.get(short_url=short_url)
+    db_data = db_config.URL.get(short_url=short_url)
 
     # Validate user's input
     if data.db_data_not_found(db_data):
