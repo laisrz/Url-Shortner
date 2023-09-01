@@ -3,10 +3,10 @@ from flask import Flask, redirect, render_template, request, jsonify
 from datetime import datetime, date
 import uuid
 from validations import data, url
-from database import db_config
+from database import db_config, insert_new_url
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 
 @app.route("/", methods=['GET'])
@@ -38,13 +38,7 @@ def shorten_url():
     short_url = str(uuid.uuid4())
 
     ### insert into database
-    db_config.URL(
-        long_url=long_url,
-        short_url=short_url,
-        creation_date=datetime.now(),
-        expiration_date=expiration_date
-    )
-    orm.commit()
+    insert_new_url.insert_new(long_url, short_url, expiration_date)
 
     # return short url to the user
     return jsonify({"short url": short_url})
@@ -88,6 +82,7 @@ def update_url():
     user_data = request.get_json()
     short_url = user_data["short_url"]
     new_long_url = user_data["long_url"]
+    expiration_date = user_data["expiration_date"]
 
     # Get all data from database based on the short url provided
     db_data = db_config.URL.get(short_url=short_url)
@@ -107,6 +102,7 @@ def update_url():
     
     # Update database
     db_data.long_url = new_long_url
+    db_data.expiration_date = expiration_date
     orm.commit()
 
     # Return message to the user
