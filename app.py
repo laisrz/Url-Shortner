@@ -20,13 +20,13 @@ def index():
 @orm.db_session
 def shorten_url():
    
-    '''Transform long url in short url'''
+    '''Transform original url in short url'''
     '''Insert it into database'''
 
     # Get data from json
     user_data = request.get_json()
 
-    long_url = user_data["long_url"]
+    long_url = user_data["original_url"]
 
     expiration_date = user_data["expiration_date"]
 
