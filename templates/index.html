@@ -3,16 +3,43 @@
 <html lang="en">
 
     <head>
-
         <meta charset="utf-8">
         <meta name="viewport" content="initial-scale=1, width=device-width">
-        
         <title>URL Shortener</title>
-
     </head>
     <body>
+        <h1>URL-Shortener</h1>
+        <form class="form">
+            <input name="original_url" type="text" placeholder="URL">
+            <input name="expiration_date" type="date" placeholder="YYYY-MM-DD">
+            <button type="submit">Submit</button>
+        </form>
+        <ul></ul>
+        <script>
+            const formURL = document.querySelector('.form');
 
-        <h2>URL-Shortener</h2>
-        
+            formURL.addEventListener('submit', event => {
+                event.preventDefault();
+
+                const formData = new FormData(formURL);
+                const data = Object.fromEntries(formData);
+
+                fetch('http://127.0.0.1:5000', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                }).then(data => console.log(data))
+                  .then(async function () {
+                    let html = '';
+                    let short_url = response.get_json('short_url');
+                    html += '<li>' + short_url + '</li>';
+                    document.querySelector('ul').innerHTML = html;
+                  })
+
+            });
+
+        </script>
     </body>
 </html>
