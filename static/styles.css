@@ -1,0 +1,12 @@
+html, body {
+    height: 100%;
+}
+
+.form-container {
+    max-width: 500;
+    padding: 3rem;
+}
+
+form {
+    padding: 1rem;
+}
