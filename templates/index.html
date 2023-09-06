@@ -20,11 +20,11 @@
             </nav>
         </header>
         <main class="w-100 m-auto form-container ">
+            <!-- URL Shortener Form -->
             <div class="row">
                 <div class="mx-auto col-10 col-md-8 col-lg-6 border bg-light">
-                <!-- URL Shortner Form -->
-                        <form id="urlform">
-                            <h1 class="h3 mb-3 fw-normal">Paste your URL</h1>
+                    <form id="urlform">
+                        <h1 class="h3 mb-3 fw-normal">Paste your URL</h1>
                             <div class="form-floating">
                                 <label for="floatingInput">Original URL</label>
                                 <input class="form-control" name="original_url" type="url" placeholder="URL">
@@ -36,7 +36,45 @@
                             </div>
                             <br>
                             <button type="submit" class="btn btn-outline-dark btn-block">Submit</button>
-                        </form>
+                    </form>
+                </div>
+            </div>
+            <!-- URL Update Form -->
+            <div class="row">
+                <div class="mx-auto col-10 col-md-8 col-lg-6 border bg-light">
+                    <form id="urlupdateform">
+                        <h1 class="h3 mb-3 fw-normal">Update your URL</h1>
+                            <div class="form-floating">
+                                <label for="floatingInput">Short URL</label>
+                                <input class="form-control" name="short_url" type="url" placeholder="URL">
+                            </div>
+                            <br>
+                            <div class="form-floating">
+                                <label for="floatingInput">New URL to be shortened</label>
+                                <input class="form-control" name="long_url" type="url" placeholder="URL">
+                            </div>
+                            <br>
+                            <div class="form-floating">
+                                <label>New Expiration Date (optional)</label>
+                                <input name="expiration_date" type="date" placeholder="YYYY-MM-DD">
+                            </div>
+                            <br>
+                            <button type="submit" class="btn btn-outline-dark btn-block">Submit</button>
+                    </form>
+                </div>
+            </div>
+            <!-- URL Delete Form -->
+            <div class="row">
+                <div class="mx-auto col-10 col-md-8 col-lg-6 border bg-light">
+                    <form id="urldeleteform">
+                        <h1 class="h3 mb-3 fw-normal">Delete your Short URL</h1>
+                            <div class="form-floating">
+                                <label for="floatingInput">Short URL</label>
+                                <input class="form-control" name="short_url" type="url" placeholder="URL">
+                            </div>
+                            <br>
+                            <button type="submit" class="btn btn-outline-dark btn-block">Submit</button>
+                    </form>
                 </div>
             </div>
         </main>
