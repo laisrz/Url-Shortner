@@ -13,8 +13,31 @@
     <body>
         <h2>URL-Shortener</h2>
         <main>
+            <form method="post">
+                <input autocomplete="off" autofocus required id="long_url" name="long_url" placeholder="URL" type="text">
+                <input autocomplete="off"  id="expiration_date" name="expiration_date" placeholder="" type="date">
+                <button type="submit">Submit</button>
+            </form>
+        <script>
+            const fs = require('fs');
 
-            
+            // create a JSON object
+            const url = {
+                "long_url": long_url,
+                "expiration_date": expiration_date
+            };
+
+            // convert JSON object to string
+            const data = JSON.stringify(url);
+
+            // write JSON string to a file
+            fs.writeFile('url.json', data, (err) => {
+                if (err) {
+                    throw err;
+                }
+                console.log("JSON data is saved.");
+            });
+        </script>         
         </main>
     </body>
 </html>
