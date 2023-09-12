@@ -34,31 +34,31 @@ update and retrieve an url
     installed. Pip is the primary Python package manager. The Python installers for Windows include pip, but you can confirm
     you have the latest version:
 
-    $ py -m pip install --upgrade pip
-    $ py -m pip --version
+    <p> $ py -m pip install --upgrade pip </p>
+    <p> $ py -m pip --version </p>
 
   * Now, you'll need to create a virtual environment. In the project’s directory run:
 
     Windows:
-    $ py -m venv env
+    <p> $ py -m venv env </p>
 
     Unix/macOS:
-    $ python3 -m venv env
+    <p> $ python3 -m venv env </p>
 
   * Activate the virtual environment:
     
     Windows:
-    $ .\env\Scripts\activate
+    <p> $ .\env\Scripts\activate </p>
 
     Unix/macOS:
-    $ source env/bin/activate
+    <p> $ source env/bin/activate </p>
     
   ### Install dependencies
   In Windows, run:
-  $ py -m pip install -r requirements.txt
+  <p> $ py -m pip install -r requirements.txt </p>
 
   In Unix/macOS:
-  $ python3 -m pip install -r requirements.txt
+  <p> $ python3 -m pip install -r requirements.txt </p>
 
   Obs: for additional information, look into: https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/
   
@@ -76,7 +76,7 @@ Obs: for additional information: https://hevodata.com/learn/flask-mysql/
 ## Run the Application
 
   1. Start the Flask development server, by running, in the project’s directory:
-     $ flask run
+     <p> $ flask run </p>
      
   2. Open a web browser and navigate to http://localhost:5000 to access the URL Shortener.
 
