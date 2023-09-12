@@ -3,7 +3,8 @@ from flask import Flask, redirect, render_template, request, jsonify
 from datetime import date
 from database import db_config, db_operations
 import validators
-from validators import ValidationFailure
+from validators import ValidationError
+
 
 
 app = Flask(__name__, static_url_path='/static')
@@ -33,7 +34,7 @@ def shorten_url():
     # Validate URL
     result = validators.url(long_url)
     
-    if isinstance(result, ValidationFailure):
+    if isinstance(result, ValidationError):
         response = jsonify({"message": "Invalid url"})
         response.status_code = 400
         return response
@@ -114,7 +115,7 @@ def update_url():
     # Validate url
     result = validators.url(new_long_url)
     
-    if isinstance(result, ValidationFailure):
+    if isinstance(result, ValidationError):
         response = jsonify({"message": "Invalid url"})
         response.status_code = 400
         return response

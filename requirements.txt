@@ -1,0 +1,6 @@
+Flask==2.3.3
+Flask-MySQL==1.5.2
+Flask-JSON==0.4.0
+pony==0.7.16
+validators==0.22.0
+httpx==0.25.0
