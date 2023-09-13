@@ -30,55 +30,66 @@ update and retrieve an url
 ## Setup Instructions
 
   ### Configure a Virtual Environment
-  * In order to setup a virtual environment and install the packages needed to run this project, you'll need to have pip
-    installed. Pip is the primary Python package manager. The Python installers for Windows include pip, but you can confirm
+  * Make sure you have pip installed. The Python installers for Windows include pip, but you can confirm
     you have the latest version:
 
-    <p> $ py -m pip install --upgrade pip </p>
-    <p> $ py -m pip --version </p>
+        py -m pip install --upgrade pip
+        py -m pip --version 
 
   * Now, you'll need to create a virtual environment. In the project’s directory run:
 
     Windows:
-    <p> $ py -m venv env </p>
+    
+        py -m venv env
 
     Unix/macOS:
-    <p> $ python3 -m venv env </p>
+    
+        python3 -m venv env
 
   * Activate the virtual environment:
     
     Windows:
-    <p> $ .\env\Scripts\activate </p>
+    
+        .\env\Scripts\activate
 
     Unix/macOS:
-    <p> $ source env/bin/activate </p>
+    
+        source env/bin/activate
     
   ### Install dependencies
+
   In Windows, run:
-  <p> $ py -m pip install -r requirements.txt </p>
+  
+          py -m pip install -r requirements.txt
 
   In Unix/macOS:
-  <p> $ python3 -m pip install -r requirements.txt </p>
+  
+    python3 -m pip install -r requirements.txt
 
-  Obs: for additional information, look into: https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/
+  Obs: for additional information, look into: 
+  https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/
   
   ### Setup MYSQL Server
-  1. Download XAMPP (software tool that handles MySQL administration over the web): https://www.apachefriends.org/download.html
+  
+  1. Download XAMPP (software tool that handles MySQL administration over the web):
+        https://www.apachefriends.org/download.html
   2. Start the following two processes once XAMPP has been installed and loaded:
-     * Apache
-     * MySQL
+       * Apache
+       * MySQL
   3. Go to https://localhost in your browser and click on phpMyAdmin on the upper right.
   4. Create a new database named: "urlshortener"
-  5. Go to the project's directory and open the file db_config.py on the database module. Update the information of the user and password of the mysql database.
+  5. Go to the project's directory and open the file db_config.py on the database module. 
+        Update the information of the user and password of the mysql database.
 
-Obs: for additional information: https://hevodata.com/learn/flask-mysql/
+  Obs: for additional information: https://hevodata.com/learn/flask-mysql/
 
-## Run the Application
+  ## Run the Application
 
   1. Start the Flask development server, by running, in the project’s directory:
-     <p> $ flask run </p>
+
+         flask run
      
-  2. Open a web browser and navigate to http://localhost:5000 to access the URL Shortener.
+  3. Open a web browser and navigate to http://localhost:5000 to access the URL Shortener.
 
 
 
