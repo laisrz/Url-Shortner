@@ -153,5 +153,35 @@ def delete_url():
     return jsonify({"message": "Short URL deleted"})
 
 
+@app.route("/search/<short_url>")
+@orm.db_session
+def search_url(short_url):
+    '''Get information about short url'''
+
+    db_data = db_config.URL.get(short_url=short_url)
+
+    # Validate user's input
+    # If the data doesn't exist in the database
+    if not db_data:
+        response = jsonify({"message": "URL provided not stored in database"})
+        response.status_code = 404
+        return response
+    
+    # If the user has deleted the data
+    if db_data.is_deleted == 1:
+        response = jsonify({"message": "URL provided has been deleted"})
+        response.status_code = 410
+        return response
+    
+    # Return data to the user    
+    return jsonify({
+                "short_url": short_url,
+                "long_url": db_data.long_url,
+                "creation_date": db_data.creation_date,
+                "expiration_date": db_data.expiration_date,
+                "number_visits": db_data.number_visits,
+            })
+
+
 if __name__ == '__main__':
     app.run(debug=True)
