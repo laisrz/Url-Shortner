@@ -1,5 +1,6 @@
-from pony import orm
 from datetime import date, datetime
+
+from pony import orm
 
 # Configurating database
 db = orm.Database()
@@ -14,11 +15,12 @@ class URL(db.Entity):
     number_visits = orm.Optional(int)
     is_deleted = orm.Required(bool, default=0)
 
+
 db.bind(
     provider='mysql',
-    host='localhost',
+    host='db',
     user='root',
-    passwd='',
+    passwd='root',
     db='urlshortener'
 )
 

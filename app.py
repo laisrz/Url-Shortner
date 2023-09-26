@@ -1,11 +1,11 @@
-from pony import orm
-from flask import Flask, redirect, render_template, request, jsonify
 from datetime import date
-from database import db_config, db_operations
+
 import validators
+from flask import Flask, jsonify, redirect, render_template, request
+from pony import orm
 from validators import ValidationError
 
-
+from database import db_config, db_operations
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -20,7 +20,7 @@ def index():
 @app.route("/", methods=['POST'])
 @orm.db_session
 def shorten_url():
-   
+
     '''Transform original url in short url'''
     '''Insert it into database'''
 
@@ -33,24 +33,24 @@ def shorten_url():
 
     # Validate URL
     result = validators.url(long_url)
-    
+
     if isinstance(result, ValidationError):
         response = jsonify({"message": "Invalid url"})
         response.status_code = 400
         return response
-    
+
     ### insert into database
     short_url = db_operations.insert_new(db_config, long_url, expiration_date)
 
     # return short url to the user
     return jsonify({"short url": short_url})
-   
+
 
 @app.route("/<short_url>")
 @orm.db_session
 def get_url(short_url):
     """Retrieve long_url from a given short url and redirect the user to the long_url"""
-    
+
     db_data = db_config.URL.get(short_url=short_url)
 
     # Validate user's input
@@ -58,12 +58,12 @@ def get_url(short_url):
         response = jsonify({"message": "URL provided not stored in database"})
         response.status_code = 404
         return response
-    
+
     if db_data.is_deleted == 1:
         response = jsonify({"message": "URL provided has been deleted"})
         response.status_code = 410
         return response
-    
+
     if db_data.expiration_date < date.today():
         response = jsonify({"message": "URL provided has expired"})
         response.status_code = 410
@@ -77,9 +77,9 @@ def get_url(short_url):
         else:
             db_data.number_visits = db_data.number_visits + 1
 
-        
+
         return redirect(db_data.long_url)
-    
+
 
 @app.route("/", methods=['PUT'])
 @orm.db_session
@@ -101,25 +101,25 @@ def update_url():
         response = jsonify({"message": "URL provided not stored in database"})
         response.status_code = 404
         return response
-    
+
     if db_data.is_deleted == 1:
         response = jsonify({"message": "URL provided has been deleted"})
         response.status_code = 410
         return response
-    
+
     if db_data.expiration_date < date.today():
         response = jsonify({"message": "URL provided has expired"})
         response.status_code = 410
         return response
-    
+
     # Validate url
     result = validators.url(new_long_url)
-    
+
     if isinstance(result, ValidationError):
         response = jsonify({"message": "Invalid url"})
         response.status_code = 400
         return response
-    
+
     # Update database
     db_operations.update(db_config, short_url, new_long_url, expiration_date)
 
@@ -131,7 +131,7 @@ def update_url():
 @orm.db_session
 def delete_url():
     '''Delete short url'''
-    
+
     # get data from json
     user_data = request.get_json()
 
@@ -166,14 +166,14 @@ def search_url(short_url):
         response = jsonify({"message": "URL provided not stored in database"})
         response.status_code = 404
         return response
-    
+
     # If the user has deleted the data
     if db_data.is_deleted == 1:
         response = jsonify({"message": "URL provided has been deleted"})
         response.status_code = 410
         return response
-    
-    # Return data to the user    
+
+    # Return data to the user
     return jsonify({
                 "short_url": short_url,
                 "long_url": db_data.long_url,
@@ -184,4 +184,4 @@ def search_url(short_url):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", debug=True)
